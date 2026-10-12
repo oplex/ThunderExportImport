@@ -48,6 +48,11 @@ export async function setupMenus() {
   await create({ id: "ei-import-folder", title: "Import mail into this folder…", contexts: ["folder_pane"] });
   await create({ id: "ei-export-selected", title: "Export selected messages…", contexts: ["message_list"] });
   await create({ id: "ei-tools", title: "ThunderExportImport", contexts: ["tools_menu"] });
+  // Right-click on the toolbar button ("action" in MV3, "browser_action" in MV2).
+  const button = browser.runtime.getManifest().manifest_version >= 3 ? "action" : "browser_action";
+  for (const [tab, title] of [["export", "Export…"], ["import", "Import…"], ["verify", "Verify an export…"], ["settings", "ThunderExportImport settings"]]) {
+    await create({ id: `ei-button-${tab}`, title, contexts: [button] });
+  }
 }
 
 browser.menus.onClicked.addListener((info, tab) => {
@@ -56,6 +61,7 @@ browser.menus.onClicked.addListener((info, tab) => {
   if (id === "ei-import-folder") return openApp({ tab: "import", folder: folderFromInfo(info) ?? "" });
   if (id === "ei-export-selected") return exportSelected(tab?.windowId);
   if (id === "ei-tools") return openApp();
+  if (id.startsWith("ei-button-")) return openApp({ tab: id.slice("ei-button-".length) });
   return undefined;
 });
 
