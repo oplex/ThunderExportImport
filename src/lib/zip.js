@@ -53,7 +53,9 @@ export function makeZip(entries, now = new Date()) {
     parts.push(new Uint8Array(local.buffer), name, data);
     const c = new DataView(new ArrayBuffer(46));
     c.setUint32(0, 0x02014b50, true);
-    c.setUint16(4, 20, true);
+    // "Made by Unix": with an MS-DOS origin, some unzip builds read names in
+    // an old DOS code page despite the UTF-8 flag. Unix also needs the mode.
+    c.setUint16(4, (3 << 8) | 20, true);
     c.setUint16(6, 20, true);
     c.setUint16(8, 0x0800, true);
     c.setUint16(12, time, true);
@@ -62,6 +64,7 @@ export function makeZip(entries, now = new Date()) {
     c.setUint32(20, data.length, true);
     c.setUint32(24, data.length, true);
     c.setUint16(28, name.length, true);
+    c.setUint32(38, (0o100644 << 16) >>> 0, true); // regular file, rw-r--r--
     c.setUint32(42, offset, true);
     central.push(new Uint8Array(c.buffer), name);
     offset += 30 + name.length + data.length;

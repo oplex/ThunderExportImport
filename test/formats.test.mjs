@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { makeZip, readZip, crc32 } from "../src/lib/zip.js";
@@ -10,6 +10,8 @@ import { makePdf, wrap } from "../src/lib/pdf.js";
 import { fileBase, safeName, uniqueNamer } from "../src/lib/names.js";
 
 const dir = mkdtempSync(join(tmpdir(), "tei-"));
+// unzip shows UTF-8 names correctly only in a UTF-8 locale (CI runners default to C).
+const utf8 = { encoding: "utf8", env: { ...process.env, LC_ALL: "C.UTF-8", LANG: "C.UTF-8" } };
 const has = (cmd) => {
   try {
     execFileSync("which", [cmd]);
@@ -28,8 +30,15 @@ test("ZIP: unzip accepts it, names are UTF-8, and it reads back", async () => {
   const file = join(dir, "t.zip");
   writeFileSync(file, zip);
   if (has("unzip")) {
-    assert.match(execFileSync("unzip", ["-t", file], { encoding: "utf8" }), /No errors detected/);
-    assert.match(execFileSync("unzip", ["-l", file], { encoding: "utf8" }), /Räkning – 2026\.eml/);
+    assert.match(execFileSync("unzip", ["-t", file], utf8), /No errors detected/);
+    assert.match(execFileSync("unzip", ["-l", file], utf8), /Räkning – 2026\.eml/);
+  }
+  // Extracted files are readable, with the right names, in any locale.
+  for (const locale of ["C", "C.UTF-8"]) {
+    const out = mkdtempSync(join(tmpdir(), "tei-x-"));
+    execFileSync("unzip", ["-q", file, "-d", out], { env: { ...process.env, LC_ALL: locale, LANG: locale } });
+    if (locale === "C.UTF-8") assert.equal(readFileSync(join(out, "Inbox/Räkning – 2026.eml"), "utf8"), "Subject: hi\r\n\r\nbody");
+    assert.equal(statSync(join(out, "Inbox/attachments/a.bin")).mode & 0o777, 0o644);
   }
   const back = await readZip(zip);
   assert.deepEqual(back.map((e) => e.path), ["Inbox/Räkning – 2026.eml", "Inbox/attachments/a.bin"]);

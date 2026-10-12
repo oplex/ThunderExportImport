@@ -5,7 +5,9 @@ import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 
-const run = (cmd, args) => execFileSync(cmd, args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+// UTF-8 locale: unzip shows UTF-8 file names correctly only in one.
+const env = { ...process.env, LC_ALL: "C.UTF-8", LANG: "C.UTF-8" };
+const run = (cmd, args) => execFileSync(cmd, args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env });
 
 function* walk(dir) {
   for (const name of readdirSync(dir)) {
@@ -38,7 +40,7 @@ export function checkDownloads(dir, expect) {
     test("PDF inside the ZIP has the message text (pdftotext)", () => {
       const pdf = run("unzip", ["-Z1", zip]).split("\n").find((l) => l.endsWith(".pdf") && !l.includes(" files/"));
       const tmp = join(dir, "check.pdf");
-      execFileSync("sh", ["-c", `unzip -p "$1" "$2" > "$3"`, "sh", zip, pdf, tmp]);
+      execFileSync("sh", ["-c", `unzip -p "$1" "$2" > "$3"`, "sh", zip, pdf, tmp], { env });
       const text = run("pdftotext", [tmp, "-"]);
       for (const t of expect.pdfText ?? []) if (!text.includes(t)) throw new Error(`“${t}” not in PDF text:\n${text.slice(0, 600)}`);
     });
