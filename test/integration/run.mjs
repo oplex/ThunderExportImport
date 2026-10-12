@@ -65,7 +65,8 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const { port } = server.address();
 
 const tbVersion = execFileSync(bin, ["--version"], { encoding: "utf8" }).match(/(\d+)\./)?.[1];
-const legacy = Number(tbVersion) < 140;
+// TB_MV2=1 tests that build on 140+ too (it is the addons.thunderbird.net build).
+const legacy = Number(tbVersion) < 140 || !!process.env.TB_MV2;
 console.log(`Thunderbird ${tbVersion}: ${legacy ? "Manifest V2 (91–139)" : "Manifest V3"} build`);
 const addons = [];
 const xpi = join(work, "addon.xpi");

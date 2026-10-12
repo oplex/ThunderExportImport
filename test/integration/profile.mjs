@@ -56,7 +56,7 @@ export function buildTestXpi(root, stage, xpi, { port, legacy = false, withTests
     manifest.permissions.push("accountsFolders");
   }
   if (legacy) {
-    manifest = toMV2(manifest);
+    manifest = toMV2(manifest, { anyVersion: true });
     const scripts = ['<script type="module" src="background.js"></script>'];
     if (withTests) scripts.push('<script type="module" src="../../test/integration/selftest.js"></script>');
     writeFileSync(join(stage, "src/background/background.html"), `<!doctype html><meta charset="utf-8">${scripts.join("")}\n`);
