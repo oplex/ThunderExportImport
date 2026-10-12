@@ -28,6 +28,7 @@ export function folderPicker(box, folders, { allow = () => true, onChange = () =
     value = entry;
     chosen.textContent = entry ? `Chosen: ${pathLabel(entry)}` : "No folder chosen";
     draw();
+    list.querySelector("li.on")?.scrollIntoView({ block: "nearest" });
     onChange(entry);
   }
   function draw() {

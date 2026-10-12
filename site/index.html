@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ThunderExportImport – export Thunderbird mail to PDF, HTML, EML and MBOX</title>
+  <meta name="description" content="Export Thunderbird folders or messages to PDF, HTML, EML, text and MBOX with attachments, as one ZIP or separate files, with an optional compliance stamp (QR code, SHA-256) and a verifiable manifest. Import EML, MBOX and ZIP back. Free and open source.">
+  <link rel="canonical" href="https://oplex.github.io/thunderexportimport/">
+  <link rel="icon" type="image/png" href="img/icon-64.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ThunderExportImport – export Thunderbird mail with a compliance stamp">
+  <meta property="og:description" content="PDF, HTML, EML, MBOX, attachments, ZIP. QR-code stamp and SHA-256 manifest. Import back.">
+  <meta property="og:url" content="https://oplex.github.io/thunderexportimport/">
+  <meta property="og:image" content="https://oplex.github.io/thunderexportimport/img/2-pdf-stamp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="style.css">
+  <script src="status.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ThunderExportImport",
+    "description": "Export Thunderbird mail to PDF, HTML, EML, text and MBOX with attachments and an optional compliance stamp; import EML, MBOX and ZIP.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Windows, macOS, Linux (Thunderbird 91 or newer)",
+    "url": "https://oplex.github.io/thunderexportimport/",
+    "downloadUrl": "https://github.com/oplex/thunderexportimport/releases/latest",
+    "license": "https://opensource.org/licenses/MIT",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Organization", "name": "oplex.se", "url": "https://oplex.se" }
+  }
+  </script>
+</head>
+<body data-app="ThunderExportImport">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="img/icon-64.png" alt="">ThunderExportImport</a>
+      <nav>
+        <a class="hide-sm" href="#stamp">Stamp</a>
+        <a class="hide-sm" href="#tested">Tested</a>
+        <a href="importexporttools-alternative.html">Compare</a>
+        <a href="https://github.com/oplex/thunderexportimport">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero wrap">
+      <img class="logo" src="img/icon-128.png" alt="ThunderExportImport logo" width="96" height="96">
+      <h1>Export Thunderbird mail,<br class="hide-sm"> ready for the archive</h1>
+      <p class="lead">Folders or single messages to PDF, HTML, EML, text and MBOX, with their attachments, in one ZIP. Optionally stamped with who exported it, when, and a SHA-256 fingerprint in a QR code. And back in again.</p>
+      <div class="buttons">
+        <a class="btn primary" href="https://github.com/oplex/thunderexportimport/releases/latest">Download – free</a>
+        <a class="btn" href="https://github.com/oplex/thunderexportimport">Source on GitHub</a>
+      </div>
+      <p class="small">Free and open source (MIT) · Thunderbird 91 to the latest release · No data collection</p>
+      <div class="shot"><img src="img/1-export.png" alt="The export page: folder, formats, compliance stamp" width="1100" height="900"></div>
+    </div>
+
+    <section class="soft">
+      <div class="wrap">
+        <h2>Every format, one click</h2>
+        <div class="grid">
+          <div class="card"><div class="ico">📄</div><h3>PDF</h3><p>Headers, text and the list of attachments on A4, with page numbers. Made inside the add-on; no printer dialog.</p></div>
+          <div class="card"><div class="ico">🌐</div><h3>HTML</h3><p>The message as a web page with its inline images. Scripts and tracking pixels removed; opens offline.</p></div>
+          <div class="card"><div class="ico">✉️</div><h3>EML and MBOX</h3><p>Each message exactly as stored, and one MBOX per folder that any mail program can import.</p></div>
+          <div class="card"><div class="ico">📎</div><h3>Attachments</h3><p>Saved next to each message, with the HTML linking to them.</p></div>
+          <div class="card"><div class="ico">🗂</div><h3>ZIP or files</h3><p>One ZIP, or a folder of files mirroring your folders and subfolders. Names from a pattern: <code>{date} {from} - {subject}</code>.</p></div>
+          <div class="card"><div class="ico">⏳</div><h3>Runs in the background</h3><p>Close the page; progress shows on the toolbar button. Cancel any time.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stamp">
+      <div class="wrap">
+        <h2>Compliance stamp and verifiable exports</h2>
+        <p class="intro">For legal holds, audits, customer disputes or just a tidy archive: each PDF and HTML can carry a stamp, and every export can carry a manifest that proves nothing was changed later.</p>
+        <div class="shots">
+          <figure><img src="img/2-pdf-stamp.png" alt="A PDF export with the compliance stamp and QR code" width="909" height="640" loading="lazy"><figcaption>Exported by, date, Message-ID, folder, SHA-256 of the message, and a QR code with the same details.</figcaption></figure>
+          <div>
+            <table class="keys">
+              <tr><td><strong>Stamp</strong></td><td>Name, organization and a note (e.g. a case number) you set once.</td></tr>
+              <tr><td><strong>SHA-256</strong></td><td>Fingerprint of the exported <code>.eml</code>; anyone can recompute it with <code>sha256sum</code>.</td></tr>
+              <tr><td><strong>QR code</strong></td><td>The same details, scannable from paper.</td></tr>
+              <tr><td><strong>Manifest</strong></td><td><code>export-manifest.json</code> lists every file with its SHA-256.</td></tr>
+              <tr><td><strong>Verify</strong></td><td>The Verify tab checks an export ZIP against its manifest: missing or changed files are named.</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="soft">
+      <div class="wrap">
+        <h2>Import, safely</h2>
+        <p class="intro">.eml files, .mbox files from Thunderbird, Apple Mail or Gmail Takeout, or a ZIP with either. Messages already in the folder are skipped, so importing the same archive twice does no harm. (Importing needs Thunderbird 106 or newer; exporting works on every version.)</p>
+        <div class="shot" style="max-width:900px"><img src="img/3-import-dark.png" alt="The import page in dark mode" width="1100" height="760" loading="lazy"></div>
+      </div>
+    </section>
+
+    <section id="tested">
+      <div class="wrap">
+        <h2>Tested on every Thunderbird</h2>
+        <p class="intro">Each change exports real messages inside real Thunderbird builds; the saved files are then checked with independent tools (<code>unzip</code>, <code>pdftotext</code>, a QR decoder). Once a week, on every major version since 91.</p>
+        <p>
+          <a href="https://github.com/oplex/thunderexportimport/actions/workflows/ci.yml"><img src="https://github.com/oplex/thunderexportimport/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status" height="20" style="display:inline"></a>
+          <a href="https://github.com/oplex/thunderexportimport/actions/workflows/compat.yml"><img src="https://github.com/oplex/thunderexportimport/actions/workflows/compat.yml/badge.svg" alt="Compatibility status" height="20" style="display:inline"></a>
+        </p>
+        <div id="testStatus"><p class="small">See the latest runs on <a href="https://github.com/oplex/thunderexportimport/actions">GitHub Actions</a>.</p></div>
+        <h3 style="margin-top:28px">Versions</h3>
+        <div id="releaseList"><p class="small"><a href="https://github.com/oplex/thunderexportimport/releases">All releases</a></p></div>
+      </div>
+    </section>
+
+    <section class="soft">
+      <div class="wrap">
+        <h2>Install</h2>
+        <ol class="steps">
+          <li>Download the <code>.xpi</code> for your Thunderbird from the <a href="https://github.com/oplex/thunderexportimport/releases/latest">latest release</a> (one for 140 and newer, one for 91–139).</li>
+          <li>In Thunderbird: <em>Add-ons and Themes → ⚙ → Install Add-on From File…</em> Updates install automatically after that.</li>
+          <li>Right-click a folder → <em>Export folder…</em></li>
+        </ol>
+        <h3 style="margin-top:28px">The Thunder suite</h3>
+        <p>Same look, made to work together: <a href="https://oplex.github.io/thunderjump/">ThunderJump</a> (jump to any folder from the keyboard) and <a href="https://oplex.github.io/thundersnippet/">ThunderSnippet</a> (canned replies with fields). Settings → <em>Back up suite settings</em> saves all of them in one file.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 <a href="https://oplex.se">oplex.se</a> · MIT License</span>
+      <a href="importexporttools-alternative.html">ImportExportTools NG alternative</a>
+      <a href="https://github.com/oplex/thunderexportimport/issues">Report a problem</a>
+      <span>Thunderbird is a trademark of the Mozilla Foundation; ThunderExportImport is not affiliated with it.</span>
+    </div>
+  </footer>
+</body>
+</html>

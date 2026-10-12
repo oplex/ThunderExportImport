@@ -1,0 +1,51 @@
+name: Website
+
+# Publishes site/ (plus the screenshots and icons from listing/) to GitHub
+# Pages: https://oplex.github.io/thunderexportimport/
+# One-time setup: repository Settings → Pages → Source: "GitHub Actions".
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", "listing/**", "scripts/site-status.mjs", ".github/workflows/pages.yml"]
+  # Refresh the test status shown on the site after every test run.
+  workflow_run:
+    workflows: ["CI", "Compatibility", "Release"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble the site
+        run: |
+          mkdir -p _site/img
+          cp -r site/* _site/
+          cp listing/*.png _site/img/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Latest test results and releases
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/site-status.mjs _site/status.json || echo '{}' > _site/status.json
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

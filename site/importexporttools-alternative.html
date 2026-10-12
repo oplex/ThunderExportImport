@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ImportExportTools NG alternative – ThunderExportImport compared</title>
+  <meta name="description" content="Comparing Thunderbird export add-ons: ThunderExportImport and ImportExportTools NG. Formats, PDF, ZIP, compliance stamp, SHA-256 manifest, import, Thunderbird versions and Experiment APIs, with sources.">
+  <link rel="canonical" href="https://oplex.github.io/thunderexportimport/importexporttools-alternative.html">
+  <link rel="icon" type="image/png" href="img/icon-64.png">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="ImportExportTools NG alternative – an honest comparison">
+  <meta property="og:description" content="ThunderExportImport vs ImportExportTools NG, with sources.">
+  <meta property="og:url" content="https://oplex.github.io/thunderexportimport/importexporttools-alternative.html">
+  <meta property="og:image" content="https://oplex.github.io/thunderexportimport/img/2-pdf-stamp.png">
+  <link rel="stylesheet" href="style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "How do I export Thunderbird emails to PDF with a timestamp or audit stamp?",
+        "acceptedAnswer": { "@type": "Answer", "text": "ThunderExportImport can add a compliance stamp to every exported PDF and HTML: who exported it, when, the Message-ID, the folder and the message's SHA-256, also as a QR code. An export-manifest.json lists every file's SHA-256 so the export can be verified later." } },
+      { "@type": "Question", "name": "Is ThunderExportImport a replacement for ImportExportTools NG?",
+        "acceptedAnswer": { "@type": "Answer", "text": "For exporting folders and messages (EML, PDF, HTML, text, MBOX, attachments) and importing EML/MBOX, yes. ImportExportTools NG also backs up whole profiles, imports MBOX files with their folder structure, imports EMLX and exports search results; ThunderExportImport doesn't." } }
+    ]
+  }
+  </script>
+</head>
+<body data-app="ThunderExportImport">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="img/icon-64.png" alt="">ThunderExportImport</a>
+      <nav>
+        <a class="hide-sm" href="./#stamp">Stamp</a>
+        <a href="#table">Comparison</a>
+        <a href="https://github.com/oplex/thunderexportimport">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero wrap">
+      <h1>An ImportExportTools NG alternative</h1>
+      <p class="lead">ImportExportTools NG is the well-known export add-on for Thunderbird, used by almost 300,000 people. ThunderExportImport is newer and smaller, with a different focus: verifiable, stamped exports that keep working across Thunderbird versions. Here is the honest comparison.</p>
+      <div class="buttons">
+        <a class="btn primary" href="https://github.com/oplex/thunderexportimport/releases/latest">Try ThunderExportImport – free</a>
+        <a class="btn" href="#table">Jump to the table</a>
+      </div>
+    </div>
+
+    <section id="table" class="soft">
+      <div class="wrap">
+        <h2>Side by side</h2>
+        <p class="intro">Figures from addons.thunderbird.net and each add-on's own files and listing, checked on 12 October 2026. “Not listed” means the listing doesn't mention it. Corrections welcome on <a href="https://github.com/oplex/thunderexportimport/issues">GitHub</a>.</p>
+        <div class="table-scroll">
+          <table class="compare">
+            <thead>
+              <tr><th></th><th class="us">ThunderExportImport 1.1</th><th>ImportExportTools NG 15.0.3</th></tr>
+            </thead>
+            <tbody>
+              <tr class="group"><th colspan="3">Basics</th></tr>
+              <tr><th>Price</th><td class="us">Free</td><td>Free</td></tr>
+              <tr><th>License</th><td class="us">MIT</td><td>GPL 3.0</td></tr>
+              <tr><th>Thunderbird versions (current release)</th><td class="us"><span class="yes">91 → any newer</span><span class="note">two builds: 91–139 and 140+</span></td><td>140 – 157 <span class="note">older versions for older Thunderbird</span></td></tr>
+              <tr><th>Experiment APIs (deep access to Thunderbird internals)</th><td class="us"><span class="yes">None</span></td><td>6</td></tr>
+              <tr><th>Download size</th><td class="us">≈ 80 KB</td><td>633 KB</td></tr>
+              <tr><th>Daily users (ATN)</th><td class="us">new</td><td>287,000</td></tr>
+
+              <tr class="group"><th colspan="3">Export</th></tr>
+              <tr><th>EML, HTML, plain text, MBOX</th><td class="us"><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+              <tr><th>PDF</th><td class="us"><span class="yes">✓</span> own PDF writer: text, Western European characters</td><td><span class="yes">✓</span></td></tr>
+              <tr><th>Attachments, subfolders, file name patterns, CSV index</th><td class="us"><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+              <tr><th>Everything in one ZIP</th><td class="us"><span class="yes">✓</span></td><td class="no">not listed</td></tr>
+              <tr><th>Compliance stamp (exported by, date, Message-ID, SHA-256, QR code)</th><td class="us"><span class="yes">✓</span></td><td class="no">not listed</td></tr>
+              <tr><th>SHA-256 manifest and Verify</th><td class="us"><span class="yes">✓</span></td><td class="no">not listed</td></tr>
+              <tr><th>Runs in the background, progress on the toolbar button</th><td class="us"><span class="yes">✓</span></td><td class="no">not listed</td></tr>
+              <tr><th>Export search results, copy to clipboard</th><td class="us no">–</td><td><span class="yes">✓</span></td></tr>
+
+              <tr class="group"><th colspan="3">Import and backup</th></tr>
+              <tr><th>Import EML and MBOX</th><td class="us"><span class="yes">✓</span> into a folder (Thunderbird 106+), duplicates skipped</td><td><span class="yes">✓</span> MBOX with folder structure, EMLX too</td></tr>
+              <tr><th>Import a ZIP</th><td class="us"><span class="yes">✓</span></td><td class="no">not listed</td></tr>
+              <tr><th>Profile backup and restore</th><td class="us no">–</td><td><span class="yes">✓</span> with schedule</td></tr>
+              <tr><th>Settings backup of other add-ons</th><td class="us"><span class="yes">✓</span> Thunder suite</td><td class="no">–</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Which one should you use?</h2>
+        <div class="grid">
+          <div class="card"><h3>ThunderExportImport</h3><p>You need exports others can trust (stamp, SHA-256, verify), a tidy ZIP per job, or support on Thunderbird versions from 91 to the newest with one add-on.</p></div>
+          <div class="card"><h3>ImportExportTools NG</h3><p>You need profile backups, MBOX imports that rebuild folder trees, EMLX import or search-result exports.</p></div>
+        </div>
+        <p style="margin-top:24px">They can be installed side by side.</p>
+        <p class="small" style="margin-top:18px">Sources: the addons.thunderbird.net page for <a href="https://addons.thunderbird.net/thunderbird/addon/importexporttools-ng/">ImportExportTools NG</a> and its public API data; the Experiment API count from its manifest.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 <a href="https://oplex.se">oplex.se</a> · MIT License</span>
+      <a href="./">ThunderExportImport home</a>
+      <span>ImportExportTools NG belongs to its authors. Thunderbird is a trademark of the Mozilla Foundation; ThunderExportImport is not affiliated with either.</span>
+    </div>
+  </footer>
+</body>
+</html>
