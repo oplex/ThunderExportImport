@@ -1,7 +1,7 @@
 name: Website
 
 # Publishes site/ (plus the screenshots and icons from listing/) to GitHub
-# Pages: https://oplex.github.io/thunderexportimport/
+# Pages: https://oplex.github.io/ThunderExportImport/
 # One-time setup: repository Settings → Pages → Source: "GitHub Actions".
 on:
   push:

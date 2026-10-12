@@ -2,6 +2,8 @@
 
 # ThunderExportImport
 
+**Website:** <https://oplex.github.io/ThunderExportImport/> · [ImportExportTools NG alternative: comparison](https://oplex.github.io/ThunderExportImport/importexporttools-alternative.html)
+
 Export Thunderbird mail the way you need it, and bring it back in.
 
 - **Folders or single messages**, with subfolders if you like
