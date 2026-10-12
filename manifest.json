@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "ThunderExportImport",
+  "version": "1.0.0",
+  "description": "Export folders or messages to EML, PDF, HTML, text and MBOX with attachments, as a ZIP or files, with an optional compliance stamp (QR, SHA-256). Import EML, MBOX and ZIP back.",
+  "author": "oplex.se",
+  "homepage_url": "https://github.com/oplex/thunderexportimport",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "thunderexportimport@oplex",
+      "strict_min_version": "140.0",
+      "update_url": "https://github.com/oplex/thunderexportimport/releases/latest/download/updates.json"
+    }
+  },
+  "icons": {
+    "16": "icons/thunderexportimport-16.png",
+    "32": "icons/thunderexportimport-32.png",
+    "48": "icons/thunderexportimport-48.png",
+    "64": "icons/thunderexportimport-64.png",
+    "96": "icons/thunderexportimport-96.png",
+    "128": "icons/thunderexportimport-128.png"
+  },
+  "permissions": [
+    "accountsRead",
+    "messagesRead",
+    "messagesImport",
+    "downloads",
+    "menus",
+    "storage"
+  ],
+  "background": {
+    "scripts": [
+      "src/background/background.js"
+    ],
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Export / import mail",
+    "default_icon": "icons/thunderexportimport.svg"
+  },
+  "options_ui": {
+    "page": "src/app/options.html",
+    "open_in_tab": true
+  },
+  "commands": {
+    "open-exporter": {
+      "description": "Open ThunderExportImport"
+    }
+  }
+}

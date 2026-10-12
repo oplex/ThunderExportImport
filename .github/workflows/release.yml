@@ -1,0 +1,60 @@
+name: Release
+
+# Either push a tag like v1.0.1 (scripts/release.sh), or press "Run workflow"
+# in the Actions tab to release the version in manifest.json from main. The
+# full test suite runs first; only then is the release published with the
+# .xpi and updates.json (the v<version> tag is created if needed).
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Work out the release tag
+        id: tag
+        run: |
+          v=$(node -p "require('./manifest.json').version")
+          if [ "$GITHUB_REF_TYPE" = tag ] && [ "v$v" != "$GITHUB_REF_NAME" ]; then
+            echo "tag $GITHUB_REF_NAME != manifest version $v"; exit 1
+          fi
+          echo "TAG=v$v" >> "$GITHUB_ENV"
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+      - run: npm run build
+      - run: node scripts/make-updates-json.mjs "$GITHUB_REPOSITORY"
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "$TAG is already released; bump the version first (scripts/release.sh)"; exit 1
+          fi
+          gh release create "$TAG" dist/*.xpi dist/updates.json --target "$GITHUB_SHA" \
+            --title "ThunderExportImport $TAG" --generate-notes \
+            --notes "Install: download the .xpi for your Thunderbird below, then open Add-ons and Themes → ⚙ → Install Add-on From File…  Updates install automatically after that.
+
+          - Thunderbird 140 or newer: thunderexportimport-${TAG#v}.xpi
+          - Thunderbird 91 – 139: thunderexportimport-${TAG#v}-tb91-139.xpi
+
+          Files with -atn in the name are for uploading to addons.thunderbird.net (see PUBLISHING.md); you don't need them."
+
+  atn:
+    needs: publish
+    uses: ./.github/workflows/atn.yml
+    with:
+      version: ${{ needs.publish.outputs.version }}
+    secrets: inherit

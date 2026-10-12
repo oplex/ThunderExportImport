@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ThunderExportImport</title>
+  <link rel="stylesheet" href="../kit/theme.css">
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body class="tk-page">
+  <div class="tk-brand"><img src="../../icons/thunderexportimport-48.png" width="40" height="40" alt=""><h1>ThunderExportImport</h1></div>
+  <p id="suite" class="dim"></p>
+  <nav class="tabs">
+    <button data-tab="export" class="primary">Export</button>
+    <button data-tab="import">Import</button>
+    <button data-tab="verify">Verify an export</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+
+  <section id="export" class="panel">
+    <h2>What to export</h2>
+    <p id="selectionNote" hidden></p>
+    <div id="exportSource">
+      <div class="picker" id="exportPicker"></div>
+      <label><input type="checkbox" id="subfolders"> Include subfolders</label>
+    </div>
+    <h2>Formats</h2>
+    <div class="formats">
+      <label><input type="checkbox" data-format="eml"> <strong>EML</strong> · each message exactly as stored (opens in any mail program)</label>
+      <label><input type="checkbox" data-format="pdf"> <strong>PDF</strong> · readable, for printing and archiving</label>
+      <label><input type="checkbox" data-format="html"> <strong>HTML</strong> · the message as a web page, with images</label>
+      <label><input type="checkbox" data-format="txt"> <strong>Text</strong> · headers and plain text</label>
+      <label><input type="checkbox" data-format="mbox"> <strong>MBOX</strong> · one file per folder (other mail programs import it)</label>
+      <label><input type="checkbox" data-format="attachments"> <strong>Attachments</strong> · saved next to each message</label>
+    </div>
+    <h2>Options</h2>
+    <label><input type="checkbox" id="stamp"> Compliance stamp on PDF and HTML: exported by, date, Message-ID, SHA-256 and a QR code
+      <span class="dim">(name and organization under Settings)</span></label>
+    <label><input type="checkbox" id="manifest"> <code>export-manifest.json</code> with the SHA-256 of every file (lets anyone verify the export later)</label>
+    <label>File names <input id="pattern" type="text" class="wide">
+      <span class="dim"><code>{date}</code> <code>{time}</code> <code>{from}</code> <code>{to}</code> <code>{subject}</code> <code>{id}</code></span></label>
+    <label>Save as <select id="output" style="width:auto"><option value="zip">one ZIP file</option><option value="files">separate files in a folder</option></select>
+      <span class="dim">(in your Downloads folder)</span></label>
+    <p><button id="runExport" class="primary">Export</button> <button id="cancelExport" hidden>Cancel</button></p>
+    <progress id="exportProgress" max="1" value="0" hidden></progress>
+    <p id="exportStatus"></p>
+  </section>
+
+  <section id="import" class="panel" hidden>
+    <h2>Files</h2>
+    <p class="dim">.eml messages, .mbox files (from Thunderbird, Apple Mail, Gmail Takeout…) or a .zip with either,
+      such as an export made here.</p>
+    <p><label class="file tk-button">Choose files…<input id="importFiles" type="file" multiple accept=".eml,.mbox,.mbx,.zip,message/rfc822"></label>
+      <span id="importChosen" class="dim"></span></p>
+    <h2>Into folder</h2>
+    <div class="picker" id="importPicker"></div>
+    <p><button id="runImport" class="primary" disabled>Import</button> <button id="cancelImport" hidden>Cancel</button></p>
+    <progress id="importProgress" max="1" value="0" hidden></progress>
+    <p id="importStatus"></p>
+  </section>
+
+  <section id="verify" class="panel" hidden>
+    <h2>Check that an export is complete and unchanged</h2>
+    <p class="dim">Choose an export ZIP made with a manifest: every file's SHA-256 is compared with
+      <code>export-manifest.json</code>.</p>
+    <p><label class="file tk-button">Choose ZIP…<input id="verifyFile" type="file" accept=".zip"></label></p>
+    <div id="verifyResult"></div>
+  </section>
+
+  <section id="settings" class="panel" hidden>
+    <h2>Compliance stamp</h2>
+    <label>Exported by <input id="exportedBy" type="text" class="wide" placeholder="Your name"></label>
+    <label>Organization <input id="organization" type="text" class="wide" placeholder="optional"></label>
+    <label>Note <input id="note" type="text" class="wide" placeholder="e.g. case or reference number (optional)"></label>
+    <h2>Thunder suite</h2>
+    <p class="dim">Save the settings of every Thunder add-on installed here (ThunderJump, ThunderSnippet, this one) in one file, or restore them.</p>
+    <p><button id="suiteBackup">Back up suite settings</button>
+      <label class="file tk-button">Restore…<input id="suiteRestore" type="file" accept=".json"></label></p>
+    <p id="suiteStatus"></p>
+    <h2>Keyboard shortcuts</h2>
+    <table><thead><tr><th>Action</th><th>Keys</th><th></th><th></th></tr></thead><tbody id="keyboard"></tbody></table>
+  </section>
+</body>
+</html>

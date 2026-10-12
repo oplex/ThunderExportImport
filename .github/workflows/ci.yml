@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_call:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tools the tests use to check PDFs, QR codes and ZIPs
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils unzip zip && python3 -m pip install --user --break-system-packages zxing-cpp pillow
+      - run: npm run check-lines
+      - run: npm run check-kit
+      - run: npm test
+      - run: npm run lint
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thunderexportimport-xpi
+          path: dist/*.xpi
+
+  thunderbird:
+    # Runs the add-on inside real headless Thunderbird ESR builds.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Below 140 the Manifest V2 build is tested (scripts/manifest-mv2.mjs).
+        # Every other major version is covered by compat.yml (weekly).
+        version: [latest-release, latest-esr, 140.7.1esr, 115.5.1, 91.13.1]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Thunderbird runtime libraries
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-0 libdbus-glib-1-2 libasound2t64 libx11-xcb1 libxtst6 poppler-utils unzip
+      - name: Download Thunderbird ${{ matrix.version }}
+        run: echo "TB_BIN=$(sh scripts/fetch-thunderbird.sh ${{ matrix.version }})" >> "$GITHUB_ENV"
+      - run: node test/integration/run.mjs
+
+  suite:
+    # ThunderExportImport together with ThunderSnippet in one Thunderbird:
+    # they must find each other and back up each other's settings.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [latest-release, 115.5.1]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: oplex/thundersnippet
+          path: partners/thundersnippet
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Thunderbird runtime libraries
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-0 libdbus-glib-1-2 libasound2t64 libx11-xcb1 libxtst6 poppler-utils unzip
+      - name: Download Thunderbird ${{ matrix.version }}
+        run: echo "TB_BIN=$(sh scripts/fetch-thunderbird.sh ${{ matrix.version }})" >> "$GITHUB_ENV"
+      - run: node test/integration/run.mjs
+        env:
+          TB_PARTNERS: partners/thundersnippet
