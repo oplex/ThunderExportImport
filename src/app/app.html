@@ -41,7 +41,8 @@
       <span class="dim"><code>{date}</code> <code>{time}</code> <code>{from}</code> <code>{to}</code> <code>{subject}</code> <code>{id}</code></span></label>
     <label>Save as <select id="output" style="width:auto"><option value="zip">one ZIP file</option><option value="files">separate files in a folder</option></select>
       <span class="dim">(in your Downloads folder)</span></label>
-    <p><button id="runExport" class="primary">Export</button> <button id="cancelExport" hidden>Cancel</button></p>
+    <p><button id="runExport" class="primary">Export</button> <button id="cancelExport" hidden>Cancel</button>
+      <button id="minimizeExport" hidden title="The export continues; the toolbar button shows its progress">Minimize</button></p>
     <progress id="exportProgress" max="1" value="0" hidden></progress>
     <p id="exportStatus"></p>
   </section>
@@ -54,7 +55,8 @@
       <span id="importChosen" class="dim"></span></p>
     <h2>Into folder</h2>
     <div class="picker" id="importPicker"></div>
-    <p><button id="runImport" class="primary" disabled>Import</button> <button id="cancelImport" hidden>Cancel</button></p>
+    <p><button id="runImport" class="primary" disabled>Import</button> <button id="cancelImport" hidden>Cancel</button>
+      <button id="minimizeImport" hidden title="The import continues; the toolbar button shows its progress">Minimize</button></p>
     <progress id="importProgress" max="1" value="0" hidden></progress>
     <p id="importStatus"></p>
   </section>

@@ -5,6 +5,8 @@ import { selectedMessages } from "../tb/mail.js";
 import { getSettings, saveSettings } from "../tb/store.js";
 import { serveSuite } from "../kit/suite.js";
 import { folderIdOf, legacyRootId } from "../kit/compat.js";
+import { currentJob } from "./jobs.js";
+export { currentJob };
 
 const APP = "src/app/app.html";
 // Message ids handed to the app page: token → ids.
@@ -57,7 +59,8 @@ browser.menus.onClicked.addListener((info, tab) => {
   return undefined;
 });
 
-(browser.action ?? browser.browserAction).onClicked.addListener(() => openApp());
+// While an export or import runs, the button brings its progress back.
+(browser.action ?? browser.browserAction).onClicked.addListener(() => openApp(currentJob()?.state === "running" ? { tab: currentJob().kind } : {}));
 browser.commands.onCommand.addListener((command) => command === "open-exporter" && openApp());
 
 browser.runtime.onMessage.addListener((msg) => {

@@ -2,13 +2,13 @@
 // and on disk by the runner), separate files, selected messages, the app UI.
 
 import { loadFolders } from "../../src/kit/folders.js";
-import { groupsFor } from "../../src/app/export-ui.js";
+import { groupsFor } from "../../src/tb/groups.js";
 import { runExport } from "../../src/tb/exporter.js";
 import { folderMessages } from "../../src/tb/mail.js";
 import { readZip } from "../../src/lib/zip.js";
 import { splitMbox } from "../../src/lib/mbox.js";
 import { verifyExport } from "../../src/lib/stamp.js";
-import { openApp, exportIds } from "../../src/background/background.js";
+import { openApp, exportIds, currentJob } from "../../src/background/background.js";
 import { DEFAULT_SETTINGS, saveSettings } from "../../src/tb/store.js";
 import { check, assert, waitFor, appView, text } from "./util.js";
 
@@ -70,6 +70,22 @@ export async function exportTests(f) {
     await waitFor(() => /^Exported 2 messages/.test(doc.getElementById("exportStatus").textContent) || /error/.test(doc.getElementById("exportStatus").className), "export to finish");
     assert(doc.getElementById("exportStatus").className === "ok", doc.getElementById("exportStatus").textContent);
     v.close();
+  });
+}
+
+export async function backgroundJobTests(f) {
+  await check("export: keeps running after Minimize; the toolbar button shows the result", async () => {
+    await openApp({ tab: "export", folder: f.sub.id });
+    const v = await appView();
+    const before = currentJob()?.id;
+    v.document.getElementById("runExport").click();
+    await waitFor(() => currentJob() && currentJob().id !== before, "the export to start");
+    v.document.getElementById("minimizeExport").click();
+    await waitFor(() => !browser.extension.getViews().some((x) => x.location.pathname.endsWith("app.html")), "the page to close");
+    const job = await waitFor(() => (currentJob().state !== "running" ? currentJob() : null), "the export to finish");
+    assert(job.state === "done" && /^Exported 1 message/.test(job.message), `job: ${JSON.stringify(job)}`);
+    const badge = await (browser.action ?? browser.browserAction).getBadgeText({});
+    assert(badge === "✓", `badge: ${badge}`);
   });
 }
 

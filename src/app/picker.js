@@ -21,7 +21,7 @@ export function folderPicker(box, folders, { allow = () => true, onChange = () =
   box.replaceChildren(input, list, chosen);
   const usable = folders.filter(allow);
   let shown = [];
-  let index = 0;
+  let index = -1; // keyboard position; none until arrows or typing
   let value = null;
 
   function choose(entry) {
@@ -33,7 +33,7 @@ export function folderPicker(box, folders, { allow = () => true, onChange = () =
   function draw() {
     list.replaceChildren(
       ...shown.map((r, i) => {
-        const li = el("li", i === index || r.entry === value ? "on" : "");
+        const li = el("li", [i === index ? "cursor" : "", r.entry === value ? "on" : ""].join(" ").trim());
         li.append(el("span", "", r.entry.name), el("span", "sub", pathLabel(r.entry)));
         li.dataset.id = r.entry.id;
         li.addEventListener("click", () => choose(r.entry));
@@ -43,14 +43,14 @@ export function folderPicker(box, folders, { allow = () => true, onChange = () =
   }
   function update() {
     shown = input.value.trim() ? rankFolders(usable, input.value, { limit: 40 }) : usable.slice(0, 40).map((entry) => ({ entry }));
-    index = 0;
+    index = input.value.trim() ? 0 : -1;
     draw();
   }
   input.addEventListener("input", update);
   input.addEventListener("keydown", (ev) => {
     if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
       ev.preventDefault();
-      if (shown.length) index = (index + (ev.key === "ArrowDown" ? 1 : -1) + shown.length) % shown.length;
+      if (shown.length) index = (Math.max(index, ev.key === "ArrowDown" ? -1 : 0) + (ev.key === "ArrowDown" ? 1 : -1) + shown.length) % shown.length;
       draw();
     } else if (ev.key === "Enter" && shown[index]) {
       ev.preventDefault();

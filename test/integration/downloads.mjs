@@ -29,7 +29,9 @@ export function checkDownloads(dir, expect) {
     }
   };
   const all = [...walk(dir)];
-  const zip = all.find((p) => p.endsWith(".zip") && !p.includes("suite"));
+  // Several exports are saved; check the one with the expected files.
+  const zips = all.filter((p) => p.endsWith(".zip"));
+  const zip = zips.find((z) => (expect.zip ?? []).every((p) => run("unzip", ["-Z1", z]).includes(p))) ?? zips[0];
   if (expect.zip) {
     test("saved ZIP passes unzip -t and holds every expected file", () => {
       if (!zip) throw new Error(`no ZIP in ${all.join(", ")}`);

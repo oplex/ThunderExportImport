@@ -3,7 +3,7 @@
 import { REPORT_URL } from "./config.js";
 import { results, post, log, waitFor } from "./util.js";
 import { seed } from "./seed.js";
-import { exportTests, EXPECT } from "./tests-export.js";
+import { exportTests, backgroundJobTests, EXPECT } from "./tests-export.js";
 import { importTests } from "./tests-import.js";
 import { ready } from "../../src/background/background.js";
 
@@ -24,6 +24,7 @@ async function run() {
   const folders = await seed();
   await exportTests(folders);
   await importTests(folders);
+  await backgroundJobTests(folders);
   // Let the last downloads finish before the runner looks at the files.
   await new Promise((r) => setTimeout(r, 1500));
   await post({ type: "result", version: info.version, tests: results, expect: EXPECT });

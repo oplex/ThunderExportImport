@@ -1,13 +1,13 @@
 // App page: the Import and Verify tabs.
 
 import { folderPicker } from "./picker.js";
-import { importInto, canImport } from "../tb/importer.js";
+import { canImport } from "../tb/importer.js";
+import { startJob } from "./job-ui.js";
 import { readZip } from "../lib/zip.js";
 import { verifyExport } from "../lib/stamp.js";
 
 const $ = (id) => document.getElementById(id);
 let files = [];
-let controller = null;
 
 function say(text, cls = "") {
   $("importStatus").textContent = text;
@@ -26,29 +26,8 @@ export function initImport(folders, params) {
     $("importChosen").textContent = files.map((f) => f.name).join(", ");
     ready();
   });
-  $("runImport").addEventListener("click", async () => {
-    controller = new AbortController();
-    $("runImport").disabled = true;
-    $("cancelImport").hidden = false;
-    $("importProgress").hidden = false;
-    try {
-      const r = await importInto(picker.value.id, files, {
-        signal: controller.signal,
-        onProgress: ({ done, total }) => {
-          $("importProgress").max = total;
-          $("importProgress").value = done;
-          say(`${done} of ${total}`);
-        },
-      });
-      say(`Imported ${r.imported} message${r.imported === 1 ? "" : "s"}${r.skipped ? ` · ${r.skipped} already there, skipped` : ""}${r.failed.length ? ` · ${r.failed.length} failed: ${r.failed.slice(0, 3).join("; ")}` : ""}`, r.failed.length ? "error" : "ok");
-    } catch (e) {
-      say(e?.name === "AbortError" ? "Import cancelled" : (e?.message ?? String(e)), "error");
-    } finally {
-      $("cancelImport").hidden = true;
-      ready();
-    }
-  });
-  $("cancelImport").addEventListener("click", () => controller?.abort());
+  // Runs in the background (continues if this page closes).
+  $("runImport").addEventListener("click", () => startJob("import", { type: "ei-start-import", folderId: picker.value.id, files }));
 
   $("verifyFile").addEventListener("change", async (ev) => {
     const box = $("verifyResult");

@@ -5,6 +5,7 @@ import { discoverSuite } from "../kit/suite.js";
 import { initExport } from "./export-ui.js";
 import { initImport } from "./import-ui.js";
 import { initSettings } from "./settings-ui.js";
+import { initJobs } from "./job-ui.js";
 
 const params = new URLSearchParams(location.search);
 
@@ -20,6 +21,7 @@ async function init() {
   await initExport(folders, params);
   initImport(folders, params);
   await initSettings();
+  await initJobs();
   const others = await discoverSuite();
   if (others.length) document.getElementById("suite").textContent = `Works together with: ${others.map((o) => `${o.app} ${o.version}`).join(", ")}`;
   document.body.dataset.ready = "1";
