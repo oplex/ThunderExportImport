@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ThunderExportImport",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Export folders or messages to EML, PDF, HTML, text and MBOX with attachments, as a ZIP or files, with an optional compliance stamp (QR, SHA-256). Import EML, MBOX and ZIP back.",
   "author": "oplex.se",
   "homepage_url": "https://github.com/oplex/thunderexportimport",

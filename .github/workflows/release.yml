@@ -8,6 +8,11 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      atn:
+        description: "Upload to addons.thunderbird.net (off: keep the version number free for a manual submission)"
+        type: boolean
+        default: true
 
 jobs:
   test:
@@ -54,6 +59,7 @@ jobs:
 
   atn:
     needs: publish
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.atn }}
     uses: ./.github/workflows/atn.yml
     with:
       version: ${{ needs.publish.outputs.version }}
